@@ -53,6 +53,65 @@ switch (option) {
     break;
   }
 
+  case "update": {
+    let index = process.argv[3];
+    let age = process.argv[4];
+    let kind = process.argv[5];
+    let name = process.argv[6];
+    let updatePet = { age: Number(age), kind: kind, name: name };
+
+    if (name === undefined) {
+      console.log("Usage: node pets.js update INDEX AGE KIND NAME");
+      return;
+    }
+
+    fs.readFile("pets.json", "utf-8", function (error, data) {
+      let pets = JSON.parse(data);
+
+      if (error) {
+        console.log(error);
+      } else {
+        pets[index] = updatePet;
+        console.log(pets);
+        fs.writeFile("pets.json", JSON.stringify(pets), function (error) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("write complete");
+          }
+        });
+      }
+    });
+    break;
+  }
+
+  case "destroy": {
+    let index = process.argv[3];
+
+    if (index === undefined) {
+      console.log(`Usage: node pets.js destroy INDEX`);
+    }
+
+    fs.readFile("pets.json", "utf-8", function (error, data) {
+      let pets = JSON.parse(data);
+
+      if (error) {
+        console.log(error);
+      } else {
+        let deletedPet = pets.splice(index, 1);
+        console.log(pets);
+        fs.writeFile("pets.json", JSON.stringify(pets), function (error) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("write complete");
+          }
+        });
+      }
+    });
+    break;
+  }
+
   default: {
     console.log("Usage: node pets.js [read | create | update | destroy]");
   }
